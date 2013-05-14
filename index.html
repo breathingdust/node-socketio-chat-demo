@@ -1,0 +1,43 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<script src="/socket.io/socket.io.js"></script>
+		<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+		<script>
+		  var socket = io.connect('http://localhost');
+
+			function sendMessage(){
+	  		var message = $('#message_input').val();
+		  		if (message.length > 0) {
+		  			socket.emit('message', {message: $('#message_input').val()}, function(){
+			  			$("#messages_container").append("<div>" + message + "</div>");
+			  			$('#message_input').val("");
+		  			});
+		  		}
+			}
+
+		  $(function(){
+			  socket.on('message',function(data){
+		  		$("#messages_container").append("<div>" + data.message + "</div>");
+			  });
+
+				$(document).keypress(function(e) {
+				    if(e.which == 13) {
+				        sendMessage();
+				    }
+				});
+
+		  	$("#submit").click(function(){
+	  			sendMessage();
+		  	});
+		  });
+		</script>
+	</head>
+	<body>
+		<div id="container">
+			<div id="messages_container" />
+			<textarea id="message_input" rows="8" cols="8"></textarea>
+			<button id="submit">Submit</button>
+		</div>
+	</body>
+</html>
